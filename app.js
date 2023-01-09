@@ -36,8 +36,6 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message });
 });
 
-const MONGODB_URI = `mongodb+srv://psychoticOwlEyes888:eyesWideShut123@cluster0.czn6dqq.mongodb.net/brd-print-shop?retryWrites=true&w=majority`;
-
 const port = process.env.PORT || 8080;
 
 mongoose
