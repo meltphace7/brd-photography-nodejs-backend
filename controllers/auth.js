@@ -3,6 +3,13 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { validationResult } = require("express-validator");
 
+const dotenv = require("dotenv");
+
+dotenv.config({ path: "./vars/.env" });
+
+// SECRET JWT PHRASE
+const secretPhrase = process.env.JWT_SECRET_PHRASE;
+
 // LOGS IN USER WITH ENTERED USER INPUT
 // SIGNS UP USER WITH VALIDATED USERINPUT
 exports.signup = (req, res, next) => {
@@ -74,7 +81,7 @@ exports.login = (req, res, next) => {
             userId: loadedUser._id.toString(),
             isAdmin: true,
           },
-          "aVerySecretiveSecret503",
+          secretPhrase,
           { expiresIn: "1h" }
         );
         res.status(200).json({
@@ -90,7 +97,7 @@ exports.login = (req, res, next) => {
             email: loadedUser.email,
             userId: loadedUser._id.toString(),
           },
-          "aVerySecretiveSecret503",
+          secretPhrase,
           { expiresIn: "1h" }
         );
 

@@ -1,4 +1,10 @@
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: "./vars/.env" });
+
+// SECRET JWT PHRASE
+const secretPhrase = process.env.JWT_SECRET_PHRASE;
 
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
@@ -11,7 +17,7 @@ module.exports = (req, res, next) => {
   const token = req.get("Authorization").split(" ")[1];
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, "aVerySecretiveSecret503");
+    decodedToken = jwt.verify(token, secretPhrase);
   } catch (err) {
     err.statusCode = 500;
     throw err;
