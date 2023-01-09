@@ -1,10 +1,8 @@
 const Product = require("../models/product");
-const User = require("../models/user");
 const Order = require("../models/order");
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const dotenv = require("dotenv");
-// const { post } = require("../routes/auth");
 
 dotenv.config({ path: "./vars/.env" });
   

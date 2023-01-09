@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
 const bodyParser = require("body-parser");
 const multer = require("multer");
+const helmet = require("helmet");
 
 const app = express();
 
@@ -26,14 +27,24 @@ app.use((req, res, next) => {
 app.use("/shop", shopRoutes);
 app.use("/auth", authRoutes);
 app.use("/admin", upload.single("image"), adminRoutes);
+app.use(helmet());
+
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  res.status(status).json({ message: message });
+});
+
+const MONGODB_URI = `mongodb+srv://psychoticOwlEyes888:eyesWideShut123@cluster0.czn6dqq.mongodb.net/brd-print-shop?retryWrites=true&w=majority`;
+
+const port = process.env.PORT || 8080;
 
 mongoose
-  .connect(
-    `mongodb+srv://psychoticOwlEyes888:eyesWideShut123@cluster0.czn6dqq.mongodb.net/brd-print-shop?retryWrites=true&w=majority`
-  )
+  .connect(MONGODB_URI)
   .then((result) => {
     console.log("CONNECTED TO MONGODB");
-    app.listen(8080);
+    app.listen(port);
   })
   .catch((error) => {
     console.log(error);
