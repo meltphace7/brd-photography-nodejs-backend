@@ -8,6 +8,18 @@ const multer = require("multer");
 const helmet = require("helmet");
 const dotenv = require("dotenv");
 
+const port = process.env.PORT || 8080;
+
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
+
 dotenv.config({ path: "./vars/.env" });
 
 const app = express();
@@ -39,16 +51,10 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message });
 });
 
-const mongoDbURI = process.env.MONGODB_URI;
 
-const port = process.env.PORT || 8080;
-
-mongoose
-  .connect(mongoDbURI)
-  .then((result) => {
-    console.log("CONNECTED TO MONGODB");
-    app.listen(port);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+//Connect to the database before listening
+connectDB().then(() => {
+    app.listen(port, () => {
+        console.log("listening for requests");
+    })
+})
