@@ -6,6 +6,9 @@ const adminRoutes = require("./routes/admin");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const helmet = require("helmet");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: "./vars/.env" });
 
 const app = express();
 
@@ -36,10 +39,12 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message });
 });
 
+const mongoDbURI = process.env.MONGODB_URI;
+
 const port = process.env.PORT || 8080;
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(mongoDbURI)
   .then((result) => {
     console.log("CONNECTED TO MONGODB");
     app.listen(port);
