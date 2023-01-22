@@ -28,7 +28,7 @@ module.exports = (req, res, next) => {
     throw error;
   }
   req.userId = decodedToken.userId;
-  if (req.userId === "63b9db33bcd25f92294461bb") {
+  if (req.userId === "63cdb6bdcbd4da1c282c8a09") {
     req.isAdmin = true;
   }
   next();
