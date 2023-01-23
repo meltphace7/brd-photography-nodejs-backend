@@ -52,6 +52,8 @@ exports.postAddProduct = (req, res, next) => {
   // const resizedImage = await sharp(req.file.buffer)
   //   .resize({ width: 1000, fit: "contain" })
   //   .toBuffer();
+  const imageUrl = `https://brdphotography-image-bucket.s3.us-west-2.amazonaws.com/${imageName}`;
+
   const params = {
     Bucket: bucketName,
     Key: imageName,
@@ -84,7 +86,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     stock: stock,
     description: description,
-    imageName: imageName.toString(),
+    imageUrl: imageUrl
   });
   newProduct
     .save()
@@ -113,6 +115,7 @@ exports.postGetEditProduct = (req, res, next) => {
 
 // Replaces old product data with edited product data
 exports.postEditProduct = (req, res, next) => {
+  const image = req.file;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("Please Enter a valid product!");
@@ -126,14 +129,15 @@ exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedStock = req.body.stock;
   const updatedDescription = req.body.description;
-  let updatedImageName = req.body.image;
+  let updatedImageUrl;
 
   if (req.file) {
     const randomImageName = (bytes = 32) =>
       crypto.randomBytes(bytes).toString("hex");
 
     const imageName = randomImageName();
-    updatedImageName = imageName;
+       const imageUrl = `https://brdphotography-image-bucket.s3.us-west-2.amazonaws.com/${imageName}`;
+    updatedImageUrl = imageUrl;
 
     const params = {
       Bucket: bucketName,
@@ -151,7 +155,7 @@ exports.postEditProduct = (req, res, next) => {
       product.price = updatedPrice;
       product.stock = updatedStock;
       product.description = updatedDescription;
-      product.imageName = updatedImageName;
+      product.imageUrl = image ? updatedImageUrl : product.imageUrl
       return product.save();
     })
     .then((result) => {
@@ -164,8 +168,10 @@ exports.postEditProduct = (req, res, next) => {
 
 // Deletes a product from DB
 exports.postDeleteProduct = (req, res, next) => {
+  console.log('delete body', req.body)
   const productId = req.body.productId;
-  const imageName = req.body.imageName;
+  const imageUrl = req.body.imageUrl;
+  const imageName = imageUrl.slice(63);
   console.log(productId);
   console.log(imageName);
 
