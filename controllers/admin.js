@@ -115,6 +115,7 @@ exports.postGetEditProduct = (req, res, next) => {
 
 // Replaces old product data with edited product data
 exports.postEditProduct = (req, res, next) => {
+  console.log('EDIT body', req.body)
   const image = req.file;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
